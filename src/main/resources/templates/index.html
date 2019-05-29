@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Введення запиту</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" th:inline="javascript">
+      /*<![CDATA[*/
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(checkForErrorMessage);
+      google.charts.setOnLoadCallback(drawSalaryChart);
+      google.charts.setOnLoadCallback(drawPopularityChart);
+
+      function checkForErrorMessage() {
+            [# th:if="${errorMessage != null}"]
+            alert(/*[[${errorMessage}]]*/);
+            [/]
+      }
+
+      function drawSalaryChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Dates');
+        data.addColumn('number', 'Зарплатня в доларах');
+        data.addRows([
+        /*[# th:each="point : ${points}"]*/
+	    	[ /*[[${point.date}]]*/, /*[[${point.averageSalary}]]*/],
+    	/*[/]*/
+        ]);
+
+        var options = {'title':'Показник середньої заробітної плати',
+                       'width':1000,
+                       'height':500
+                       };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('salary_chart_div'));
+        chart.draw(data, options);
+      }
+
+        function drawPopularityChart() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Dates');
+        data.addColumn('number', 'Кількість людей з опитування');
+        data.addRows([
+        /*[# th:each="point : ${points}"]*/
+	    	[ /*[[${point.date}]]*/, /*[[${point.surveyQuantity}]]*/],
+    	/*[/]*/
+        ]);
+
+        var options = {'title':'Показник популярності',
+                       'width':1000,
+                       'height':500,
+                       'hAxis':{ viewWindow: { min: 0 } }
+                       };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('popularity_chart_div'));
+        chart.draw(data, options);
+      }
+    /*]]>*/
+    </script>
+</head>
+<body>
+<div class="container">
+    <form method="post">
+        <div class="row mb-2">
+
+            <!--City-->
+            <div class="col-12 col-md-4 col-lg-3">
+                <div class="form-group">
+                    <label for="city">Місто</label>
+                    <select id="city" name="city" class="form-control form-control-sm">
+                        <option value="" selected>вся Україна</option>
+                        <option th:each="optVal: ${formData.getCities()}"
+                                th:text="${optVal}"
+                                th:value="${optVal}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <!--Position-->
+            <div class="col-12 col-md-4 col-lg-3">
+                <div class="form-group">
+                    <label for="position">Посада</label>
+                    <select id="position" name="position" class="form-control form-control-sm"
+                            onchange="myFunction(this.value)">
+                        <option value="" selected>будь-яка</option>
+                        <option th:each="optVal: ${formData.getPositions()}"
+                                th:text="${optVal}"
+                                th:value="${optVal}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <!--Programming language-->
+            <div id="languageGroup" class="col-12 col-md-4 col-lg-3" style="display:block;">
+                <div class="form-group">
+                    <label for="language">Мова програмування</label>
+                    <select id="language" name="language" class="form-control form-control-sm">
+                        <option value="" selected>будь-яка</option>
+                        <option th:each="optVal: ${formData.getProgrammingLanguages()}"
+                                th:text="${optVal}"
+                                th:value="${optVal}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <!--QA specialization-->
+            <div id="specializationGroup" class="col-12 col-md-4 col-lg-3" style="display:none;">
+                <div class="form-group">
+                    <label for="specialization">Спеціалізація</label>
+                    <select id="specialization" name="specialization" class="form-control form-control-sm">
+                        <option value="" selected>будь-яка</option>
+                        <option th:each="optVal: ${formData.getSpecializations()}"
+                                th:text="${optVal}"
+                                th:value="${optVal}"></option>
+                    </select>
+                </div>
+            </div>
+
+
+            <!--English level-->
+            <div id="englishLevelGroup" class="col-12 col-md-4 col-lg-3">
+                <div class="form-group">
+                    <label for="englishLevel">Рівень англійського</label>
+                    <select id="englishLevel" name="englishLevel" class="form-control form-control-sm">
+                        <option value="" selected>будь-який</option>
+                        <option value="элементарный">елементарний</option>
+                        <option value="ниже среднего">нижче середнього</option>
+                        <option value="средний">середній</option>
+                        <option value="выше среднего">вище середнього</option>
+                        <option value="продвинутый">просунутий</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+        <div class="row mb-2">
+            <!--Education level-->
+            <div id="educationLevelGroup" class="col-12 col-md-4 col-lg-3">
+                <div class="form-group">
+                    <label for="educationLevel">Рівень освіти</label>
+                    <select id="educationLevel" name="educationLevel" class="form-control form-control-sm">
+                        <option value="" selected>будь-який</option>
+                        <option th:each="optVal: ${formData.getEducationLevels()}"
+                                th:text="${optVal}"
+                                th:value="${optVal}"></option>
+                    </select>
+                </div>
+            </div>
+            <div id="minimalExperienceGroup" class="col-12 col-md-4 col-lg-3">
+                <div class="form-group">
+                    <label for="minimalExperience">Досвід більший ніж:</label>
+                    <select id="minimalExperience" name="minimalExperience" class="form-control form-control-sm"
+                            onchange="expVal()">
+                        <option value="0" selected>Менше року</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">Більше десяти років</option>
+                    </select>
+                </div>
+            </div>
+            <div id="maximalExperienceGroup" class="col-12 col-md-4 col-lg-3">
+                <div class="form-group">
+                    <label for="maximalExperience">Досвід меньший ніж:</label>
+                    <select id="maximalExperience" name="maximalExperience" class="form-control form-control-sm"
+                            onchange="expVal()">
+                        <option value="0">Менше року</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10" selected>Більше десяти років</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-block btn-info search-button">
+                <span class="fa fa-search"></span> Відправити запит
+            </button>
+
+        </div>
+    </form>
+
+    <div th:if="${points != null}" id="salary_chart_div"></div>
+    <div th:if="${points != null}" id="popularity_chart_div"></div>
+
+</div>
+</div>
+<script type="text/javascript">
+function myFunction(val) {
+  if(val == "" || val == "Junior Software Engineer" || val == "Software Engineer" || val == "Senior Software Engineer" || val == "Technical Lead" || val == "System Architect"){
+	  var langGroup = document.getElementById("languageGroup");
+	  var specGroup = document.getElementById("specializationGroup");
+
+	  langGroup.style.display  = "block";
+	  specGroup.style.display  = "none";
+	  specGroup.value = "";
+  } else if(val == "Junior QA engineer" || val == "QA engineer" || val == "Senior QA engineer" || val == "QA Tech Lead"){
+      document.getElementById("languageGroup").style.display  = "none";
+      document.getElementById("specializationGroup").style.display  = "block";
+  } else {
+      document.getElementById("languageGroup").style.display  = "none";
+      document.getElementById("specializationGroup").style.display  = "none";
+  }
+}
+
+function expVal(){
+    var min = parseInt(minimalExperience.value, 10);
+    var max = parseInt(maximalExperience.value, 10);
+
+    if(min > max){
+    maximalExperience.value = min;
+    minimalExperience.value = max;
+    }
+}
+</script>
+</body>
+</html>
