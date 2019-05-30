@@ -1,26 +1,20 @@
 package com.ponomar.itMarketAnalytics.sevice;
 
 import com.ponomar.itMarketAnalytics.entity.Point;
+import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class DateService {
-    public static String dateToString(Date date){
+    public String dateToString(Date date){
         return new SimpleDateFormat("yyyy-MM-dd").format(date);
     }
 
-    public static String[] stringToParts(String s){
-        return s.split("[^\\d]");
-    }
-
-    public static String partsToString(String[] parts){
-        return parts[0] + "-" + parts[1] + "-" + parts[2];
-    }
-
-    public static String transformDate(String date){
-        String[] parts = stringToParts(date);
+    public String transformDate(String date){
+        String[] parts = date.split("[^\\d]");
         if (parts[1].equals("06")){
             parts[1] = " Червень";
         } else {
@@ -30,9 +24,9 @@ public class DateService {
         return parts[0]+parts[1];
     }
 
-    public static List<Point> transformDates(List<Point> points){
+    public List<Point> transformDates(List<Point> points){
         for (Point p : points){
-            p.setDate(DateService.transformDate(p.getDate()));
+            p.setDate(transformDate(p.getDate()));
         }
         return points;
     }

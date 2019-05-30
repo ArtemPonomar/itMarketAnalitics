@@ -1,8 +1,5 @@
 package com.ponomar.itMarketAnalytics.entity;
 
-import com.ponomar.itMarketAnalytics.sevice.DateService;
-
-import java.util.Date;
 import java.util.Objects;
 
 public class Point {
@@ -18,10 +15,6 @@ public class Point {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public void setDate(Date date) {
-        this.date = DateService.dateToString(date);
     }
 
     public double getAverageSalary() {

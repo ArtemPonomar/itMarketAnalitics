@@ -6,7 +6,7 @@ import com.ponomar.itMarketAnalytics.entity.Point;
 import com.ponomar.itMarketAnalytics.entity.SearchParams;
 import com.ponomar.itMarketAnalytics.sevice.FormDataService;
 import com.ponomar.itMarketAnalytics.sevice.GoogleAPIService;
-import com.ponomar.itMarketAnalytics.sevice.GraphBuilder;
+import com.ponomar.itMarketAnalytics.sevice.GraphBuilderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,22 +23,19 @@ public class SearchController {
     private FormDataService formDataService;
 
     @Autowired
-    private GraphBuilder graphBuilder;
+    private GraphBuilderService graphBuilderService;
 
     @Autowired
     private GoogleAPIService googleAPIService;
 
     @GetMapping
-    public String index(Model model) {
-        FormData formData = formDataService.getFormData();
-
-        model.addAttribute("formData", formData);
-
+    public String showIndex(Model model) {
+        model.addAttribute("formData", formDataService.getFormData());
         return "index";
     }
 
     @PostMapping
-    public String index(@RequestParam(required = false) String city,
+    public String showResponce(@RequestParam(required = false) String city,
                         @RequestParam(required = false) String position,
                         @RequestParam(required = false) String language,
                         @RequestParam(required = false) String specialization,
@@ -58,7 +55,7 @@ public class SearchController {
         searchParams.setMinimalExperience(minimalExperience);
         searchParams.setMaximalExperience(maximalExperience);
 
-        List<Point> points = graphBuilder.getPoints(searchParams);
+        List<Point> points = graphBuilderService.getPoints(searchParams);
         List<GoogleAPIPoint> apiPoints = googleAPIService.toAPIPoints(points);
         if (apiPoints == null) model.addAttribute("errorMessage", "Недостатньо даних для аналізу");
 

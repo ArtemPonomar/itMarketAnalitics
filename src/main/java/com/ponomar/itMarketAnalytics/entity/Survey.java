@@ -36,6 +36,7 @@ public class Survey {
 
     private Date surveyDate;
 
+
     public void setSalary(float salary) {
         this.salary = salary;
     }

@@ -18,11 +18,13 @@ public class FormDataService {
     @Autowired
     private SurveyService surveyService;
 
+    @Autowired DateService dateService;
+
     public FormData getFormData(){
         if (formDataRepository.count() > 0){
             return getFormDataFromRepo();
         } else {
-            updateFormData();
+            refreshFormData();
             return getFormDataFromRepo();
         }
     }
@@ -35,7 +37,7 @@ public class FormDataService {
         formDataRepository.deleteAll();
     }
 
-    public void updateFormData() {
+    public void refreshFormData() {
         clearRepo();
         FormData formData = new FormData();
 
@@ -66,7 +68,7 @@ public class FormDataService {
             }
             subjectAreas.remove("");
             subjectAreas.remove("na");
-            surveyTimes.add(DateService.dateToString(survey.getSurveyDate()));
+            surveyTimes.add(dateService.dateToString(survey.getSurveyDate()));
         }
 
         formData.setCities(cities);
