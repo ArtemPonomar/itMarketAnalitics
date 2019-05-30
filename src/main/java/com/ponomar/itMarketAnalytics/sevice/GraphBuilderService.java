@@ -6,7 +6,6 @@ import com.ponomar.itMarketAnalytics.entity.Survey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -17,9 +16,6 @@ public class GraphBuilderService {
 
     @Autowired
     private MathService mathService;
-
-    @Autowired
-    private FileService fileService;
 
     @Autowired
     private DateService dateService;
@@ -48,8 +44,6 @@ public class GraphBuilderService {
         }
         result.sort(Comparator.comparing(Point::getDate));
         if (result.size() < 16) return null;
-
-        fileService.writeToFile(mathService.transformPointsToRawData(result));
 
         dateService.transformDates(result);
 
